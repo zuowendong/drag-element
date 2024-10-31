@@ -5,7 +5,9 @@
       <div>
         <!-- components -->
       </div>
-      <div class="bg-white"></div>
+      <div class="bg-white">
+        <Editor />
+      </div>
       <div>
         <!-- attrs -->
       </div>
@@ -13,6 +15,8 @@
   </main>
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import Editor from "./components/Editor.vue";
+</script>
 
 <style scoped></style>
