@@ -1,5 +1,5 @@
 <template>
-  <div class="relative text-black">
+  <div ref="editorRef" class="w-full h-full relative text-black">
     <ShapeBox
       v-for="(item, index) in componentStore.componentData"
       :key="item.id"
@@ -22,7 +22,15 @@
 <script setup lang="ts">
 import ShapeBox from "./ShapeBox.vue";
 import { useComponentStore } from "@/stores/component";
+import { useEditorStore } from "@/stores/editor";
 import { getShapeStyle, getStyle } from "@/utils/style";
+import { onMounted, ref } from "vue";
 
 const componentStore = useComponentStore();
+const editorStore = useEditorStore();
+const editorRef = ref();
+
+onMounted(() => {
+  editorStore.setEditorRect(editorRef);
+});
 </script>
