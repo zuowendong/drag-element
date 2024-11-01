@@ -11,7 +11,7 @@
       <component
         :is="item.key"
         :id="'component' + item.id"
-        :style="getStyle(item.style)"
+        :style="getComponentStyle(item.style)"
         :element="item"
         :index="index"
       ></component>
@@ -23,7 +23,7 @@
 import ShapeBox from "./ShapeBox.vue";
 import { useComponentStore } from "@/stores/component";
 import { useEditorStore } from "@/stores/editor";
-import { getShapeStyle, getStyle } from "@/utils/style";
+import { getShapeStyle, getComponentStyle } from "@/utils/style";
 import { onMounted, ref } from "vue";
 
 const componentStore = useComponentStore();

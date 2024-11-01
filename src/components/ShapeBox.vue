@@ -1,25 +1,28 @@
 <template>
   <div
+    ref="shapeBoxRef"
     class="absolute"
     :class="{
-      'outline outline-1 outline-[#59c7f9]': active,
+      'outline outline-1 outline-[#1677ff]': active,
     }"
     @mousedown="handleMouseDownOnShape"
   >
     <div
       v-for="item in cursorPoints"
       :key="item"
-      class="absolute w-[8px] h-[8px] bg-white border border-[#59c7f9] rounded-[50%] z-10"
+      class="absolute w-[8px] h-[8px] bg-white border border-[#1677ff] rounded-[50%] z-10 hover:bg-[#fadb14] hover:border-[#fadb14]"
       :style="getPointStyle(item)"
       @mousedown="(e) => handleMouseDownOnPoint(e, item)"
     ></div>
 
     <slot></slot>
+
+    <img v-show="active" class="rotateIcon" src="/rotate.png" alt="rotate" @mousedown="handleRotate" />
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, ref } from "vue";
 import { useComponentStore } from "@/stores/component";
 import { useEditorStore } from "@/stores/editor";
 import { useShapePositionAndSize } from "@/composables/shapePositionSize";
@@ -190,4 +193,53 @@ function handleMouseDownOnPoint(e, point) {
   document.addEventListener("mousemove", move);
   document.addEventListener("mouseup", moveEnd);
 }
+
+const shapeBoxRef = ref();
+function handleRotate(e) {
+  componentStore.setCompChooseState(true);
+
+  e.preventDefault();
+  e.stopPropagation();
+
+  const pos = { ...props.defaultStyle };
+  const startY = e.clientY;
+  const startX = e.clientX;
+  const startRotate = pos.rotate;
+
+  const shapeRectInfo = shapeBoxRef.value.getBoundingClientRect();
+  const centerX = shapeRectInfo.left + shapeRectInfo.width / 2;
+  const centerY = shapeRectInfo.top + shapeRectInfo.height / 2;
+
+  const rotateDegreeBefore = Math.atan2(startY - centerY, startX - centerX) / (Math.PI / 180);
+
+  const move = (moveEvent) => {
+    const curX = moveEvent.clientX;
+    const curY = moveEvent.clientY;
+    const rotateDegreeAfter = Math.atan2(curY - centerY, curX - centerX) / (Math.PI / 180);
+    pos.rotate = startRotate + rotateDegreeAfter - rotateDegreeBefore;
+
+    componentStore.setShapeStyle({
+      width: pos.width,
+      height: pos.height,
+      top: pos.top,
+      left: pos.left,
+      rotate: pos.rotate,
+    });
+  };
+
+  const moveEnd = () => {
+    document.removeEventListener("mousemove", move);
+    document.removeEventListener("mouseup", moveEnd);
+    cursors.value = getCursor();
+  };
+
+  document.addEventListener("mousemove", move);
+  document.addEventListener("mouseup", moveEnd);
+}
 </script>
+
+<style scoped>
+.rotateIcon {
+  @apply w-[20px] h-[20px] absolute bottom-[-40px] left-[50%] translate-x-[-50%] cursor-grab active:cursor-grabbing;
+}
+</style>

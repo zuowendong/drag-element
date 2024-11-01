@@ -13,17 +13,19 @@ export function getShapeStyle(style) {
   return result;
 }
 
-export function getStyle(style) {
+export function getComponentStyle(style) {
   const result: any = {};
   Object.keys(style).forEach((key) => {
-    if (key === "rotate") {
-      result.transform = `${key}(${style[key]}deg)`;
-    } else {
-      if (style[key] !== "") {
-        result[key] = style[key];
+    if (!needSUnit.includes(key)) {
+      if (key == "rotate") {
+        result.transform = `${key}(${style[key]}deg)`;
+      } else {
+        if (style[key] !== "") {
+          result[key] = style[key];
 
-        if (needTUnit.includes(key)) {
-          result[key] += "px";
+          if (needTUnit.includes(key)) {
+            result[key] += "px";
+          }
         }
       }
     }
