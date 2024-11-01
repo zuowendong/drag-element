@@ -1,6 +1,6 @@
 <template>
-  <div class="select-none">
-    <img src="/demo.png" alt="demo.png" />
+  <div class="w-full h-full select-none">
+    <img class="w-full h-full" src="/demo.png" alt="demo.png" />
   </div>
 </template>
 
