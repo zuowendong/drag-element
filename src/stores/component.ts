@@ -1,13 +1,11 @@
-import { ref, computed } from "vue";
+import { ref } from "vue";
 import { defineStore } from "pinia";
 import { IMAGE_COMPONENT, TEXT_COMPONENT } from "@/mock/component";
 
 export const useComponentStore = defineStore("component", () => {
   const componentData = ref([{ ...IMAGE_COMPONENT }, { ...TEXT_COMPONENT }]);
-  const curComponent = ref({
-    ...IMAGE_COMPONENT,
-  });
-  const curComponentIndex = ref(null);
+  const curComponent = ref<any>(null);
+  const curComponentIndex = ref<number | null>(null);
 
   function setCurComponent(component, index) {
     curComponent.value = component;
@@ -20,8 +18,11 @@ export const useComponentStore = defineStore("component", () => {
     if (width) curComponent.value.style.width = Math.round(width);
     if (height) curComponent.value.style.height = Math.round(height);
     if (rotate) curComponent.value.style.rotate = Math.round(rotate);
+  }
 
-    console.log(2222, curComponent.value);
+  const isChosenComponent = ref(false);
+  function setCompChooseState(state: boolean) {
+    isChosenComponent.value = state;
   }
 
   return {
@@ -29,5 +30,7 @@ export const useComponentStore = defineStore("component", () => {
     curComponent,
     setCurComponent,
     setShapeStyle,
+    isChosenComponent,
+    setCompChooseState,
   };
 });

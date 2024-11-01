@@ -5,7 +5,11 @@
       <div class="">
         <!-- components -->
       </div>
-      <div class="bg-white border-l border-r border-[#ccc]">
+      <div
+        class="bg-white border-l border-r border-[#ccc]"
+        @mousedown="handleMouseDown"
+        @mouseup="deselectCurComponent"
+      >
         <Editor />
       </div>
       <div>
@@ -17,6 +21,19 @@
 
 <script setup lang="ts">
 import Editor from "./components/Editor.vue";
+import { useComponentStore } from "@/stores/component";
+
+const componentStore = useComponentStore();
+
+function handleMouseDown(e) {
+  e.stopPropagation();
+  componentStore.setCompChooseState(false);
+}
+function deselectCurComponent() {
+  if (!componentStore.isChosenComponent) {
+    componentStore.setCurComponent(null, null);
+  }
+}
 </script>
 
 <style scoped></style>

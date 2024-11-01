@@ -23,7 +23,7 @@ import { computed } from "vue";
 import { useComponentStore } from "@/stores/component";
 import { useEditorStore } from "@/stores/editor";
 import { useShapePositionAndSize } from "@/composables/shapePositionSize";
-import { useShapePoints } from "@/composables/ShapPoint";
+import { useShapePoints } from "@/composables/ShapePoint";
 
 const props = defineProps({
   element: {
@@ -61,14 +61,24 @@ function getCursor() {
   return setCursor(componentStore.curComponent, pointList);
 }
 
-const { calculateTop, calculateBottom, calculateLeft, calculateRight } = useShapePositionAndSize();
+const {
+  calculateTop,
+  calculateBottom,
+  calculateLeft,
+  calculateRight,
+  calculateLeftTop,
+  calculateRightTop,
+  calculateLeftBottom,
+  calculateRightBottom,
+} = useShapePositionAndSize();
 
 function handleMouseDownOnShape(e) {
+  componentStore.setCompChooseState(true);
+
   e.preventDefault();
   e.stopPropagation();
 
   componentStore.setCurComponent(props.element, props.index);
-
   cursors.value = getCursor();
 
   let pos = { ...props.defaultStyle };
@@ -100,12 +110,12 @@ function handleMouseDownOnShape(e) {
 }
 
 function handleMouseDownOnPoint(e, point) {
+  componentStore.setCompChooseState(true);
+
   e.stopPropagation();
   e.preventDefault();
 
   const style = { ...props.defaultStyle };
-  // w/h
-  const proportion = style.width / style.height;
   const center = {
     x: style.left + style.width / 2,
     y: style.top + style.height / 2,
@@ -135,32 +145,28 @@ function handleMouseDownOnPoint(e, point) {
 
     switch (point) {
       case "t":
-        calculateTop(style, curPosition, {
-          center,
-          curPoint,
-          symmetricPoint,
-        });
+        calculateTop(style, curPosition, { center, curPoint, symmetricPoint });
         break;
       case "b":
-        calculateBottom(style, curPosition, {
-          center,
-          curPoint,
-          symmetricPoint,
-        });
+        calculateBottom(style, curPosition, { center, curPoint, symmetricPoint });
         break;
       case "l":
-        calculateLeft(style, curPosition, {
-          center,
-          curPoint,
-          symmetricPoint,
-        });
+        calculateLeft(style, curPosition, { center, curPoint, symmetricPoint });
         break;
       case "r":
-        calculateRight(style, curPosition, {
-          center,
-          curPoint,
-          symmetricPoint,
-        });
+        calculateRight(style, curPosition, { center, curPoint, symmetricPoint });
+        break;
+      case "lt":
+        calculateLeftTop(style, curPosition, { center, curPoint, symmetricPoint });
+        break;
+      case "rt":
+        calculateRightTop(style, curPosition, { center, curPoint, symmetricPoint });
+        break;
+      case "lb":
+        calculateLeftBottom(style, curPosition, { center, curPoint, symmetricPoint });
+        break;
+      case "rb":
+        calculateRightBottom(style, curPosition, { center, curPoint, symmetricPoint });
         break;
 
       default:
@@ -174,8 +180,6 @@ function handleMouseDownOnPoint(e, point) {
       left: style.left,
       rotate: style.rotate,
     });
-
-    console.log("move", curPosition);
   };
 
   const moveEnd = () => {

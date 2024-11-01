@@ -93,11 +93,83 @@ function calculateRight(style, curPosition, pointInfo) {
   style.left = Math.round(newCenter.x - newWidth / 2);
 }
 
+function calculateLeftTop(style, curPosition, pointInfo) {
+  const { symmetricPoint } = pointInfo;
+  let newCenterPoint = getCenterPoint(curPosition, symmetricPoint);
+  let newTopLeftPoint = calculateRotatedPointCoordinate(curPosition, newCenterPoint, -style.rotate);
+  let newBottomRightPoint = calculateRotatedPointCoordinate(symmetricPoint, newCenterPoint, -style.rotate);
+
+  let newWidth = newBottomRightPoint.x - newTopLeftPoint.x;
+  let newHeight = newBottomRightPoint.y - newTopLeftPoint.y;
+
+  if (newWidth > 0 && newHeight > 0) {
+    style.width = Math.round(newWidth);
+    style.height = Math.round(newHeight);
+    style.left = Math.round(newTopLeftPoint.x);
+    style.top = Math.round(newTopLeftPoint.y);
+  }
+}
+
+function calculateRightTop(style, curPosition, pointInfo) {
+  const { symmetricPoint } = pointInfo;
+  let newCenterPoint = getCenterPoint(curPosition, symmetricPoint);
+  let newTopRightPoint = calculateRotatedPointCoordinate(curPosition, newCenterPoint, -style.rotate);
+  let newBottomLeftPoint = calculateRotatedPointCoordinate(symmetricPoint, newCenterPoint, -style.rotate);
+
+  let newWidth = newTopRightPoint.x - newBottomLeftPoint.x;
+  let newHeight = newBottomLeftPoint.y - newTopRightPoint.y;
+
+  if (newWidth > 0 && newHeight > 0) {
+    style.width = Math.round(newWidth);
+    style.height = Math.round(newHeight);
+    style.left = Math.round(newBottomLeftPoint.x);
+    style.top = Math.round(newTopRightPoint.y);
+  }
+}
+
+function calculateLeftBottom(style, curPosition, pointInfo) {
+  const { symmetricPoint } = pointInfo;
+  let newCenterPoint = getCenterPoint(curPosition, symmetricPoint);
+  let newTopRightPoint = calculateRotatedPointCoordinate(symmetricPoint, newCenterPoint, -style.rotate);
+  let newBottomLeftPoint = calculateRotatedPointCoordinate(curPosition, newCenterPoint, -style.rotate);
+
+  let newWidth = newTopRightPoint.x - newBottomLeftPoint.x;
+  let newHeight = newBottomLeftPoint.y - newTopRightPoint.y;
+
+  if (newWidth > 0 && newHeight > 0) {
+    style.width = Math.round(newWidth);
+    style.height = Math.round(newHeight);
+    style.left = Math.round(newBottomLeftPoint.x);
+    style.top = Math.round(newTopRightPoint.y);
+  }
+}
+
+function calculateRightBottom(style, curPosition, pointInfo) {
+  const { symmetricPoint } = pointInfo;
+  let newCenterPoint = getCenterPoint(curPosition, symmetricPoint);
+  let newTopLeftPoint = calculateRotatedPointCoordinate(symmetricPoint, newCenterPoint, -style.rotate);
+  let newBottomRightPoint = calculateRotatedPointCoordinate(curPosition, newCenterPoint, -style.rotate);
+
+  let newWidth = newBottomRightPoint.x - newTopLeftPoint.x;
+  let newHeight = newBottomRightPoint.y - newTopLeftPoint.y;
+
+  if (newWidth > 0 && newHeight > 0) {
+    style.width = Math.round(newWidth);
+    style.height = Math.round(newHeight);
+    style.left = Math.round(newTopLeftPoint.x);
+    style.top = Math.round(newTopLeftPoint.y);
+  }
+}
+
 export function useShapePositionAndSize() {
   return {
     calculateTop,
     calculateBottom,
     calculateLeft,
     calculateRight,
+    calculateLeftTop,
+    calculateRightTop,
+    calculateLeftBottom,
+    calculateRightBottom,
   };
 }
