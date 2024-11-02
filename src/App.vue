@@ -6,7 +6,7 @@
         <!-- components -->
       </div>
       <div
-        class="bg-white border-l border-r border-[#ccc]"
+        class="bg-white border-l border-r border-[#ccc] overflow-hidden"
         @mousedown="handleMouseDown"
         @mouseup="deselectCurComponent"
       >

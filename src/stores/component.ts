@@ -25,6 +25,10 @@ export const useComponentStore = defineStore("component", () => {
     isChosenComponent.value = state;
   }
 
+  function setShapeSingleStyle(key, value) {
+    curComponent.value.style[key] = value;
+  }
+
   return {
     componentData,
     curComponent,
@@ -32,5 +36,6 @@ export const useComponentStore = defineStore("component", () => {
     setShapeStyle,
     isChosenComponent,
     setCompChooseState,
+    setShapeSingleStyle,
   };
 });
