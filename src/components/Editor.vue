@@ -16,6 +16,8 @@
         :index="index"
       ></component>
     </ShapeBox>
+
+    <MarkLine />
   </div>
 </template>
 
@@ -25,6 +27,7 @@ import { useComponentStore } from "@/stores/component";
 import { useEditorStore } from "@/stores/editor";
 import { getShapeStyle, getComponentStyle } from "@/utils/style";
 import { onMounted, ref } from "vue";
+import MarkLine from "./MarkLine.vue";
 
 const componentStore = useComponentStore();
 const editorStore = useEditorStore();
