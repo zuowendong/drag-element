@@ -1,6 +1,8 @@
 <template>
-  <div v-for="line in lines" :key="line">
+  <div class="h-full">
     <div
+      v-for="line in lines"
+      :key="line"
       v-show="lineStates[line]"
       class="absolute bg-[#59c7f9] z-50"
       :class="{
@@ -13,37 +15,28 @@
 
 <script setup lang="ts">
 import { ref, watch } from "vue";
-import { useShapeStore } from "@/stores/shapeMove";
 import { useComponentStore } from "@/stores/component";
 import { getCompRotatedStyle } from "@/utils/style";
 import { useEditorStore } from "@/stores/editor";
 
 const lines = ref(["lx", "ly"]);
-function isXLine(line: string) {
-  return line.includes("x");
-}
+const isXLine = (line: string) => line.includes("x");
 
 const lineStates = ref({
   lx: false,
   ly: false,
 });
 
-const shapeStore = useShapeStore();
+const editorStore = useEditorStore();
+const componentStore = useComponentStore();
 watch(
-  () => ({
-    state: shapeStore.shapeMoveState,
-    isMove: shapeStore.isMoving,
-  }),
-  ({ state, isMove }) => {
+  () => componentStore.isMoving,
+  (isMove) => {
     if (isMove) {
-      showLine(state.x, state.y);
+      showLine();
     } else {
-      // console.log(5555);
-      // hiddenLine();
+      hiddenLine();
     }
-  },
-  {
-    deep: true,
   }
 );
 
@@ -58,9 +51,7 @@ function isNearly(dragValue, targetValue) {
   return Math.abs(dragValue - targetValue) <= diff;
 }
 
-const componentStore = useComponentStore();
-const editorStore = useEditorStore();
-function showLine(isRightward: boolean, isDownward: boolean) {
+function showLine() {
   const curCompStyle = getCompRotatedStyle(componentStore.curComponent.style);
   const curCompHalfWidth = curCompStyle.width / 2;
   const curCompHalfHeight = curCompStyle.height / 2;
@@ -76,7 +67,8 @@ function showLine(isRightward: boolean, isDownward: boolean) {
       ...lineStates.value,
       lx: true,
     };
-    componentStore.setShapeSingleStyle("top", targetY);
+    const value = curCompStyle.rotate != 0 ? translateCurComponentPos("top", targetY, curCompStyle) : targetY;
+    componentStore.setShapeSingleStyle("top", value);
   }
 
   if (isNearly(curCompStyle.top + curCompHalfHeight, targetY)) {
@@ -84,7 +76,11 @@ function showLine(isRightward: boolean, isDownward: boolean) {
       ...lineStates.value,
       lx: true,
     };
-    componentStore.setShapeSingleStyle("top", targetY - curCompHalfHeight);
+    const value =
+      curCompStyle.rotate != 0
+        ? translateCurComponentPos("top", targetY - curCompHalfHeight, curCompStyle)
+        : targetY - curCompHalfHeight;
+    componentStore.setShapeSingleStyle("top", value);
   }
 
   if (isNearly(curCompStyle.top + curCompStyle.height, targetY)) {
@@ -92,7 +88,11 @@ function showLine(isRightward: boolean, isDownward: boolean) {
       ...lineStates.value,
       lx: true,
     };
-    componentStore.setShapeSingleStyle("top", targetY - curCompStyle.height);
+    const value =
+      curCompStyle.rotate != 0
+        ? translateCurComponentPos("top", targetY - curCompStyle.height, curCompStyle)
+        : targetY - curCompStyle.height;
+    componentStore.setShapeSingleStyle("top", value);
   }
 
   if (isNearly(curCompStyle.left, targetX)) {
@@ -100,7 +100,8 @@ function showLine(isRightward: boolean, isDownward: boolean) {
       ...lineStates.value,
       ly: true,
     };
-    componentStore.setShapeSingleStyle("left", targetX);
+    const value = curCompStyle.rotate != 0 ? translateCurComponentPos("left", targetX, curCompStyle) : targetX;
+    componentStore.setShapeSingleStyle("left", value);
   }
 
   if (isNearly(curCompStyle.left + curCompHalfWidth, targetX)) {
@@ -108,7 +109,11 @@ function showLine(isRightward: boolean, isDownward: boolean) {
       ...lineStates.value,
       ly: true,
     };
-    componentStore.setShapeSingleStyle("left", targetX - curCompHalfWidth);
+    const value =
+      curCompStyle.rotate != 0
+        ? translateCurComponentPos("left", targetX - curCompHalfWidth, curCompStyle)
+        : targetX - curCompHalfWidth;
+    componentStore.setShapeSingleStyle("left", value);
   }
 
   if (isNearly(curCompStyle.left + curCompStyle.width, targetX)) {
@@ -116,7 +121,22 @@ function showLine(isRightward: boolean, isDownward: boolean) {
       ...lineStates.value,
       ly: true,
     };
-    componentStore.setShapeSingleStyle("left", targetX - curCompStyle.width);
+    const value =
+      curCompStyle.rotate != 0
+        ? translateCurComponentPos("left", targetX - curCompStyle.width, curCompStyle)
+        : targetX - curCompStyle.width;
+    componentStore.setShapeSingleStyle("left", value);
+  }
+}
+
+function showXLine() {}
+
+function translateCurComponentPos(key, pos, curCompStyle) {
+  const { width, height } = componentStore.curComponent.style;
+  if (key === "top") {
+    return Math.round(pos - (height - curCompStyle.height) / 2);
+  } else if (key === "left") {
+    return Math.round(pos - (width - curCompStyle.width) / 2);
   }
 }
 </script>
