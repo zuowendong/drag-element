@@ -54,6 +54,9 @@ export function useShapePoints() {
       }
     }
     return {
+      width: point.length === 1 && (hasT || hasB) ? "16px" : "8px",
+      height: point.length === 1 && (hasL || hasR) ? "16px" : "8px",
+      borderRadius: point.length === 2 ? "50%" : "6px",
       marginLeft: "-4px",
       marginTop: "-4px",
       left: `${newLeft}px`,

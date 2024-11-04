@@ -10,7 +10,11 @@
     <div
       v-for="item in cursorPoints"
       :key="item"
-      class="absolute w-[8px] h-[8px] bg-white border border-[#1677ff] rounded-[50%] z-10 hover:bg-[#fadb14] hover:border-[#fadb14]"
+      class="absolute bg-white border border-[#ccc] z-10"
+      :class="{
+        'border-[#fadb14] bg-[#fadb14]': activePoint === item,
+        'border-transparent bg-transparent': activePoint && activePoint !== item,
+      }"
       :style="getPointStyle(item)"
       @mousedown="(e) => handleMouseDownOnPoint(e, item)"
     ></div>
@@ -22,7 +26,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, nextTick } from "vue";
+import { computed, ref, nextTick, watch } from "vue";
 import { useComponentStore } from "@/stores/component";
 import { useEditorStore } from "@/stores/editor";
 import { useShapePositionAndSize } from "@/composables/shapePositionSize";
@@ -119,7 +123,9 @@ function handleMouseDownOnShape(e) {
   document.addEventListener("mouseup", moveEnd);
 }
 
+const activePoint = ref("");
 function handleMouseDownOnPoint(e, point) {
+  activePoint.value = point;
   componentStore.setCompChooseState(true);
 
   e.stopPropagation();
@@ -193,6 +199,7 @@ function handleMouseDownOnPoint(e, point) {
   };
 
   const moveEnd = () => {
+    activePoint.value = "";
     document.removeEventListener("mousemove", move);
     document.removeEventListener("mouseup", moveEnd);
   };
