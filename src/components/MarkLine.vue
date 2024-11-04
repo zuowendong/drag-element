@@ -15,28 +15,36 @@
 
 <script setup lang="ts">
 import { ref, watch } from "vue";
+import { useShapeStore } from "@/stores/shapeMove";
 import { useComponentStore } from "@/stores/component";
 import { getCompRotatedStyle } from "@/utils/style";
 import { useEditorStore } from "@/stores/editor";
 
 const lines = ref(["lx", "ly"]);
-const isXLine = (line: string) => line.includes("x");
+function isXLine(line: string) {
+  return line.includes("x");
+}
 
 const lineStates = ref({
   lx: false,
   ly: false,
 });
 
-const editorStore = useEditorStore();
-const componentStore = useComponentStore();
+const shapeStore = useShapeStore();
 watch(
-  () => componentStore.isMoving,
-  (isMove) => {
+  () => ({
+    state: shapeStore.shapeMoveState,
+    isMove: shapeStore.isMoving,
+  }),
+  ({ state, isMove }) => {
     if (isMove) {
       showLine();
     } else {
       hiddenLine();
     }
+  },
+  {
+    deep: true,
   }
 );
 
@@ -50,6 +58,9 @@ const diff = 20;
 function isNearly(dragValue, targetValue) {
   return Math.abs(dragValue - targetValue) <= diff;
 }
+
+const componentStore = useComponentStore();
+const editorStore = useEditorStore();
 
 function showLine() {
   const curCompStyle = getCompRotatedStyle(componentStore.curComponent.style);
@@ -128,8 +139,6 @@ function showLine() {
     componentStore.setShapeSingleStyle("left", value);
   }
 }
-
-function showXLine() {}
 
 function translateCurComponentPos(key, pos, curCompStyle) {
   const { width, height } = componentStore.curComponent.style;
