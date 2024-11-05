@@ -31,6 +31,7 @@ import { useComponentStore } from "@/stores/component";
 import { useEditorStore } from "@/stores/editor";
 import { useShapePositionAndSize } from "@/composables/shapePositionSize";
 import { useShapePoints } from "@/composables/ShapePoint";
+import { useShapeStore } from "@/stores/shape";
 
 const props = defineProps({
   element: {
@@ -108,9 +109,7 @@ function handleMouseDownOnShape(e) {
       rotate: 0,
     });
 
-    nextTick(() => {
-      componentStore.componentMove();
-    });
+    componentStore.componentMove();
   };
   const moveEnd = () => {
     componentStore.componentMoveEnd();
@@ -121,9 +120,12 @@ function handleMouseDownOnShape(e) {
   document.addEventListener("mouseup", moveEnd);
 }
 
-const activePoint = ref("");
+const shapeStore = useShapeStore();
+const activePoint = computed(() => shapeStore.activeShapePoint);
+
 function handleMouseDownOnPoint(e, point) {
-  activePoint.value = point;
+  shapeStore.setActivePoint(point);
+
   componentStore.setCompChooseState(true);
 
   e.stopPropagation();
@@ -198,7 +200,7 @@ function handleMouseDownOnPoint(e, point) {
   };
 
   const moveEnd = () => {
-    activePoint.value = "";
+    shapeStore.setActivePoint("");
     document.removeEventListener("mousemove", move);
     document.removeEventListener("mouseup", moveEnd);
   };

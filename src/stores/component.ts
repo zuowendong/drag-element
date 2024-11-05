@@ -1,9 +1,9 @@
 import { ref } from "vue";
 import { defineStore } from "pinia";
-import { IMAGE_COMPONENT, TEXT_COMPONENT } from "@/mock/component";
+import { IMAGE_COMPONENT } from "@/mock/component";
 
 export const useComponentStore = defineStore("component", () => {
-  const componentData = ref([{ ...IMAGE_COMPONENT }, { ...TEXT_COMPONENT }]);
+  const componentData = ref([{ ...IMAGE_COMPONENT }]);
   const curComponent = ref<any>(null);
   const curComponentIndex = ref<number | null>(null);
 

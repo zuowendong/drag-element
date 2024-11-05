@@ -44,7 +44,7 @@ watch(
       hiddenLine();
     }
 
-    if (style.width || style.height) {
+    if (style?.width || style?.height) {
       showLineAfterChangeSize();
     } else {
       hiddenLine();
@@ -163,25 +163,23 @@ function showLineAfterChangeSize() {
   const curCompStyle = componentStore.curComponent.style;
 
   const targetRect = editorStore.editorRect;
-  const targetX = targetRect.width / 2;
-  const targetY = targetRect.height / 2;
+  const targetHalfWidth = targetRect.width / 2;
+  const targetHalfHeight = targetRect.height / 2;
 
   if (isInCenter.value) {
-    if (isNearly(curCompStyle.top, targetY)) {
-      lineStates.value = {
-        ...lineStates.value,
-        lx: true,
-      };
-
-      if (curCompStyle.top == targetY && !curCompHeight.value) {
-        curCompHeight.value = curCompStyle.height;
-      }
-      if (curCompHeight.value) {
-        componentStore.setShapeSingleStyle("height", curCompHeight.value);
-      }
-      componentStore.setShapeSingleStyle("top", targetY);
-    }
-
+    // if (isNearly(curCompStyle.top, targetY)) {
+    //   lineStates.value = {
+    //     ...lineStates.value,
+    //     lx: true,
+    //   };
+    //   if (curCompStyle.top == targetY && !curCompHeight.value) {
+    //     curCompHeight.value = curCompStyle.height;
+    //   }
+    //   if (curCompHeight.value) {
+    //     componentStore.setShapeSingleStyle("height", curCompHeight.value);
+    //   }
+    //   componentStore.setShapeSingleStyle("top", targetY);
+    // }
     // if (isNearly(curCompStyle.left, targetX)) {
     //   lineStates.value = {
     //     ...lineStates.value,
@@ -190,6 +188,30 @@ function showLineAfterChangeSize() {
     //   console.log(123123123, curCompStyle.width);
     //   componentStore.setShapeSingleStyle("left", targetX);
     // }
+
+    if (isNearly(curCompStyle.left, targetHalfWidth)) {
+      lineStates.value = {
+        ...lineStates.value,
+        ly: true,
+      };
+      componentStore.setShapeSingleStyle("left", targetHalfWidth);
+    }
+
+    if (isNearly(curCompStyle.left + curCompStyle.width, targetHalfWidth)) {
+      lineStates.value = {
+        ...lineStates.value,
+        ly: true,
+      };
+      componentStore.setShapeSingleStyle("width", targetHalfWidth - curCompStyle.left);
+    }
+
+    if (isNearly(curCompStyle.top + curCompStyle.height, targetHalfHeight)) {
+      lineStates.value = {
+        ...lineStates.value,
+        lx: true,
+      };
+      componentStore.setShapeSingleStyle("height", targetHalfHeight - curCompStyle.top);
+    }
   }
 }
 </script>

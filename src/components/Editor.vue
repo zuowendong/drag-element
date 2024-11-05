@@ -1,5 +1,5 @@
 <template>
-  <div ref="editorRef" class="w-full h-full relative text-black">
+  <div ref="editorRef" class="w-full h-full relative">
     <ShapeBox
       v-for="(item, index) in componentStore.componentData"
       :key="item.id"

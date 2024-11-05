@@ -41,9 +41,7 @@ function drawImage() {
       canvasCtx.value.drawImage(imgDom.value, 0, 0, width, height);
     };
   } else {
-    canvasCtx.value.clearRect(0, 0, width, height);
     canvasCtx.value.drawImage(imgDom.value, 0, 0, width, height);
-    canvasCtx.value.setTransform(1, 0, 0, 1, 0, 0);
   }
 }
 
