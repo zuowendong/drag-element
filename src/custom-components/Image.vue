@@ -1,11 +1,13 @@
 <template>
-  <div style="overflow: hidden">
-    <canvas ref="canvasRef"></canvas>
+  <div class="absolute overflow-hidden">
+    <canvas ref="canvasRef" class="absolute"></canvas>
   </div>
 </template>
 
 <script setup lang="ts">
 import { onMounted, ref, watch } from "vue";
+import { useShapeStore } from "@/stores/shape";
+import { useComponentStore } from "@/stores/component";
 
 const props = defineProps({
   propsVal: {
@@ -20,19 +22,23 @@ const props = defineProps({
 
 const canvasRef = ref();
 const canvasCtx = ref();
+const initWidth = ref(props.element.style.width);
+const initHeight = ref(props.element.style.height);
+const initLeft = ref(props.element.style.left);
 
 onMounted(() => {
   canvasCtx.value = canvasRef.value.getContext("2d");
-  drawImage();
+  drawImage(initWidth.value, initHeight.value);
 });
 
 const isFirst = ref(true);
 const imgDom = ref();
 
-function drawImage() {
+function drawImage(sWidth, sHeight, isBorder = true) {
   const { width, height } = props.element.style;
   canvasRef.value.width = width;
   canvasRef.value.height = height;
+
   if (isFirst.value) {
     isFirst.value = false;
     imgDom.value = document.createElement("img");
@@ -41,9 +47,31 @@ function drawImage() {
       canvasCtx.value.drawImage(imgDom.value, 0, 0, width, height);
     };
   } else {
-    canvasCtx.value.drawImage(imgDom.value, 0, 0, width, height);
+    if (isBorder) {
+      canvasRef.value.width = initWidth.value;
+      canvasRef.value.height = initHeight.value;
+    }
+    canvasCtx.value.drawImage(imgDom.value, 0, 0, sWidth, sHeight);
   }
 }
+
+const shapeStore = useShapeStore();
+const componentStore = useComponentStore();
+watch(
+  () => ({
+    isMove: shapeStore.isMoving,
+    style: componentStore.curComponent?.style,
+  }),
+  ({ isMove, style }) => {
+    if (isMove) {
+      initLeft.value = componentStore.curComponent.style.left;
+    }
+  },
+  {
+    deep: true,
+    immediate: true,
+  }
+);
 
 watch(
   () => ({
@@ -53,7 +81,17 @@ watch(
   (newVal, oldValue) => {
     if (newVal.width != oldValue.width && newVal.height != oldValue.height) {
       // change width & height
-      drawImage();
+      drawImage(newVal.width, newVal.height, false);
+    }
+    if (
+      newVal.width != oldValue.width &&
+      newVal.height === oldValue.height &&
+      (shapeStore.activeShapePoint === "l" || shapeStore.activeShapePoint === "r")
+    ) {
+      if (shapeStore.activeShapePoint === "l") {
+        canvasRef.value.style.left = `${initLeft.value - props.element?.style.left}px`;
+      }
+      drawImage(initWidth.value, initHeight.value);
     }
   },
   { deep: true }
