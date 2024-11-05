@@ -12,7 +12,9 @@
         :is="item.key"
         :id="'component' + item.id"
         :style="getComponentStyle(item.style)"
+        class="w-full h-full outline-none"
         :element="item"
+        :props-val="item.propsVal"
         :index="index"
       ></component>
     </ShapeBox>
