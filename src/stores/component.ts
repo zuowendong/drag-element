@@ -6,7 +6,6 @@ export const useComponentStore = defineStore("component", () => {
   const componentData = ref([{ ...IMAGE_COMPONENT }, { ...TEXT_COMPONENT }]);
   const curComponent = ref<any>(null);
   const curComponentIndex = ref<number | null>(null);
-  const isMoving = ref(false);
 
   function setCurComponent(component, index) {
     curComponent.value = component;
@@ -30,6 +29,7 @@ export const useComponentStore = defineStore("component", () => {
     curComponent.value.style[key] = value;
   }
 
+  const isMoving = ref(false);
   function componentMove() {
     isMoving.value = true;
   }

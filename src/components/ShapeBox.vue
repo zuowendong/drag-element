@@ -13,7 +13,7 @@
       class="absolute bg-white border border-[#ccc] z-10"
       :class="{
         'border-[#fadb14] bg-[#fadb14]': activePoint === item,
-        'border-transparent bg-transparent': activePoint && activePoint !== item,
+        hidden: activePoint && activePoint !== item,
       }"
       :style="getPointStyle(item)"
       @mousedown="(e) => handleMouseDownOnPoint(e, item)"
@@ -31,7 +31,6 @@ import { useComponentStore } from "@/stores/component";
 import { useEditorStore } from "@/stores/editor";
 import { useShapePositionAndSize } from "@/composables/shapePositionSize";
 import { useShapePoints } from "@/composables/ShapePoint";
-import { useShapeStore } from "@/stores/shapeMove";
 
 const props = defineProps({
   element: {
@@ -54,7 +53,6 @@ const props = defineProps({
 
 const componentStore = useComponentStore();
 const editorStore = useEditorStore();
-const shapeStore = useShapeStore();
 
 // left-top  top  right-top  right  right-bottom  bottom  left-bottom  left
 const pointList = ["lt", "t", "rt", "r", "rb", "b", "lb", "l"];
@@ -111,11 +109,11 @@ function handleMouseDownOnShape(e) {
     });
 
     nextTick(() => {
-      shapeStore.shapeMove(curX - startX > 0, curY - startY > 0);
+      componentStore.componentMove();
     });
   };
   const moveEnd = () => {
-    shapeStore.shapeMoveEnd();
+    componentStore.componentMoveEnd();
     document.removeEventListener("mousemove", move);
     document.removeEventListener("mouseup", moveEnd);
   };
@@ -154,6 +152,7 @@ function handleMouseDownOnPoint(e, point) {
       isFirst = false;
       return;
     }
+
     const curPosition = {
       x: moveEvent.clientX - Math.round(editorRectInfo.left),
       y: moveEvent.clientY - Math.round(editorRectInfo.top),
