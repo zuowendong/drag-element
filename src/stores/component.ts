@@ -29,14 +29,6 @@ export const useComponentStore = defineStore("component", () => {
     curComponent.value.style[key] = value;
   }
 
-  const isMoving = ref(false);
-  function componentMove() {
-    isMoving.value = true;
-  }
-  function componentMoveEnd() {
-    isMoving.value = false;
-  }
-
   return {
     componentData,
     curComponent,
@@ -45,8 +37,5 @@ export const useComponentStore = defineStore("component", () => {
     isChosenComponent,
     setCompChooseState,
     setShapeSingleStyle,
-    isMoving,
-    componentMove,
-    componentMoveEnd,
   };
 });

@@ -54,6 +54,7 @@ const props = defineProps({
 
 const componentStore = useComponentStore();
 const editorStore = useEditorStore();
+const shapeStore = useShapeStore();
 
 // left-top  top  right-top  right  right-bottom  bottom  left-bottom  left
 const pointList = ["lt", "t", "rt", "r", "rb", "b", "lb", "l"];
@@ -109,10 +110,10 @@ function handleMouseDownOnShape(e) {
       rotate: 0,
     });
 
-    componentStore.componentMove();
+    shapeStore.shapeMove();
   };
   const moveEnd = () => {
-    componentStore.componentMoveEnd();
+    shapeStore.shapeMoveEnd();
     document.removeEventListener("mousemove", move);
     document.removeEventListener("mouseup", moveEnd);
   };
@@ -120,12 +121,11 @@ function handleMouseDownOnShape(e) {
   document.addEventListener("mouseup", moveEnd);
 }
 
-const shapeStore = useShapeStore();
 const activePoint = computed(() => shapeStore.activeShapePoint);
 
 function handleMouseDownOnPoint(e, point) {
   shapeStore.setActivePoint(point);
-
+  shapeStore.changeShapeStyle();
   componentStore.setCompChooseState(true);
 
   e.stopPropagation();
@@ -201,6 +201,7 @@ function handleMouseDownOnPoint(e, point) {
 
   const moveEnd = () => {
     shapeStore.setActivePoint("");
+    shapeStore.overChangeShapeStyle();
     document.removeEventListener("mousemove", move);
     document.removeEventListener("mouseup", moveEnd);
   };

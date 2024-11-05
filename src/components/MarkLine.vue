@@ -18,6 +18,7 @@ import { ref, watch } from "vue";
 import { useComponentStore } from "@/stores/component";
 import { getCompRotatedStyle } from "@/utils/style";
 import { useEditorStore } from "@/stores/editor";
+import { useShapeStore } from "@/stores/shape";
 
 const lines = ref(["lx", "ly"]);
 function isXLine(line: string) {
@@ -31,23 +32,22 @@ const lineStates = ref({
 
 const componentStore = useComponentStore();
 const editorStore = useEditorStore();
+const shapeStore = useShapeStore();
 
 watch(
   () => ({
-    isMove: componentStore.isMoving,
+    isMove: shapeStore.isMoving,
+    shapeStyle: shapeStore.hasChangeShapeStyle,
     style: componentStore.curComponent?.style,
   }),
-  ({ isMove, style }) => {
-    if (isMove) {
+  (newVal) => {
+    if (newVal.isMove) {
       showLineAfterChangePos();
     } else {
       hiddenLine();
-    }
-
-    if (style?.width || style?.height) {
-      showLineAfterChangeSize();
-    } else {
-      hiddenLine();
+      if (newVal.shapeStyle) {
+        showLineAfterChangeSize();
+      }
     }
   },
   {
@@ -67,6 +67,7 @@ function isNearly(dragValue, targetValue) {
 }
 
 const isInCenter = ref(false);
+const compStyleInCenter = ref();
 
 function showLineAfterChangePos() {
   const curCompStyle = getCompRotatedStyle(componentStore.curComponent.style);
@@ -101,6 +102,10 @@ function showLineAfterChangePos() {
     componentStore.setShapeSingleStyle("top", value);
 
     isInCenter.value = true;
+    compStyleInCenter.value = {
+      width: curCompStyle.width,
+      height: curCompStyle.height,
+    };
   }
 
   if (isNearly(curCompStyle.top + curCompStyle.height, targetY)) {
@@ -134,6 +139,12 @@ function showLineAfterChangePos() {
         ? translateCurComponentPos("left", targetX - curCompHalfWidth, curCompStyle)
         : targetX - curCompHalfWidth;
     componentStore.setShapeSingleStyle("left", value);
+
+    isInCenter.value = true;
+    compStyleInCenter.value = {
+      width: curCompStyle.width,
+      height: curCompStyle.height,
+    };
   }
 
   if (isNearly(curCompStyle.left + curCompStyle.width, targetX)) {
@@ -158,7 +169,6 @@ function translateCurComponentPos(key, pos, curCompStyle) {
   }
 }
 
-const curCompHeight = ref();
 function showLineAfterChangeSize() {
   const curCompStyle = componentStore.curComponent.style;
 
@@ -166,35 +176,15 @@ function showLineAfterChangeSize() {
   const targetHalfWidth = targetRect.width / 2;
   const targetHalfHeight = targetRect.height / 2;
 
-  if (isInCenter.value) {
-    // if (isNearly(curCompStyle.top, targetY)) {
-    //   lineStates.value = {
-    //     ...lineStates.value,
-    //     lx: true,
-    //   };
-    //   if (curCompStyle.top == targetY && !curCompHeight.value) {
-    //     curCompHeight.value = curCompStyle.height;
-    //   }
-    //   if (curCompHeight.value) {
-    //     componentStore.setShapeSingleStyle("height", curCompHeight.value);
-    //   }
-    //   componentStore.setShapeSingleStyle("top", targetY);
-    // }
-    // if (isNearly(curCompStyle.left, targetX)) {
-    //   lineStates.value = {
-    //     ...lineStates.value,
-    //     ly: true,
-    //   };
-    //   console.log(123123123, curCompStyle.width);
-    //   componentStore.setShapeSingleStyle("left", targetX);
-    // }
-
+  if (isInCenter.value && curCompStyle.rotate == 0) {
     if (isNearly(curCompStyle.left, targetHalfWidth)) {
       lineStates.value = {
         ...lineStates.value,
         ly: true,
       };
+
       componentStore.setShapeSingleStyle("left", targetHalfWidth);
+      componentStore.setShapeSingleStyle("width", compStyleInCenter.value.width / 2);
     }
 
     if (isNearly(curCompStyle.left + curCompStyle.width, targetHalfWidth)) {
@@ -211,6 +201,16 @@ function showLineAfterChangeSize() {
         lx: true,
       };
       componentStore.setShapeSingleStyle("height", targetHalfHeight - curCompStyle.top);
+    }
+
+    if (isNearly(curCompStyle.top, targetHalfHeight)) {
+      lineStates.value = {
+        ...lineStates.value,
+        lx: true,
+      };
+
+      componentStore.setShapeSingleStyle("top", targetHalfHeight);
+      componentStore.setShapeSingleStyle("height", compStyleInCenter.value.height / 2);
     }
   }
 }
