@@ -12,7 +12,7 @@
       :key="item"
       class="absolute bg-white border border-[#ccc] z-10"
       :class="{
-        'border-[#fadb14] bg-[#fadb14]': activePoint === item,
+        activePoint: activePoint === item,
         hidden: activePoint && activePoint !== item,
       }"
       :style="getPointStyle(item)"
@@ -257,5 +257,9 @@ function handleRotate(e) {
 <style scoped>
 .rotateIcon {
   @apply w-[20px] h-[20px] absolute bottom-[-40px] left-[50%] translate-x-[-50%] cursor-grab active:cursor-grabbing;
+}
+.activePoint {
+  border-color: #fadb14;
+  background-color: #fadb14 !important;
 }
 </style>

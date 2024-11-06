@@ -3,7 +3,7 @@ import { defineStore } from "pinia";
 import { IMAGE_COMPONENT } from "@/mock/component";
 
 export const useComponentStore = defineStore("component", () => {
-  const componentData = ref([{ ...IMAGE_COMPONENT }]);
+  const componentData = ref([{ ...JSON.parse(JSON.stringify(IMAGE_COMPONENT)) }]);
   const curComponent = ref<any>(null);
   const curComponentIndex = ref<number | null>(null);
 
@@ -29,6 +29,13 @@ export const useComponentStore = defineStore("component", () => {
     curComponent.value.style[key] = value;
   }
 
+  function resetCompRotate() {
+    curComponent.value.style.rotate = 0;
+  }
+  function resetComponentStyle() {
+    curComponent.value.style = { ...IMAGE_COMPONENT.style };
+  }
+
   return {
     componentData,
     curComponent,
@@ -37,5 +44,7 @@ export const useComponentStore = defineStore("component", () => {
     isChosenComponent,
     setCompChooseState,
     setShapeSingleStyle,
+    resetCompRotate,
+    resetComponentStyle,
   };
 });

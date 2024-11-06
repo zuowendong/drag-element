@@ -25,6 +25,7 @@ const canvasCtx = ref();
 const initWidth = ref(props.element.style.width);
 const initHeight = ref(props.element.style.height);
 const initLeft = ref(props.element.style.left);
+const initTop = ref(props.element.style.top);
 
 onMounted(() => {
   canvasCtx.value = canvasRef.value.getContext("2d");
@@ -64,7 +65,10 @@ watch(
   }),
   ({ isMove, style }) => {
     if (isMove) {
+      initWidth.value = componentStore.curComponent.style.width;
+      initHeight.value = componentStore.curComponent.style.height;
       initLeft.value = componentStore.curComponent.style.left;
+      initTop.value = componentStore.curComponent.style.top;
     }
   },
   {
@@ -90,6 +94,17 @@ watch(
     ) {
       if (shapeStore.activeShapePoint === "l") {
         canvasRef.value.style.left = `${initLeft.value - props.element?.style.left}px`;
+      }
+      drawImage(initWidth.value, initHeight.value);
+    }
+
+    if (
+      newVal.width === oldValue.width &&
+      newVal.height != oldValue.height &&
+      (shapeStore.activeShapePoint === "t" || shapeStore.activeShapePoint === "b")
+    ) {
+      if (shapeStore.activeShapePoint === "t") {
+        canvasRef.value.style.top = `${initTop.value - props.element?.style.top}px`;
       }
       drawImage(initWidth.value, initHeight.value);
     }

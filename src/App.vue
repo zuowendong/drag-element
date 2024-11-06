@@ -1,6 +1,21 @@
 <template>
   <main class="w-full h-screen flex flex-col">
-    <header class="w-full h-14 flex items-center justify-center border-b border-[#ccc]">FEI CUT EXAM</header>
+    <header class="w-full h-14 flex items-center justify-center border-b border-[#ccc] relative">
+      <span>FEI CUT EXAM</span>
+
+      <div
+        class="absolute right-[100px] px-[10px] py-[4px] border border-[#333] rounded-lg hover:bg-[#59c7f9] hover:border-[#59c7f9] hover:text-white cursor-pointer"
+        @click="componentStore.resetCompRotate"
+      >
+        reset rotate
+      </div>
+      <div
+        class="absolute right-[20px] px-[10px] py-[4px] border border-[#333] rounded-lg hover:bg-[#59c7f9] hover:border-[#59c7f9] hover:text-white cursor-pointer"
+        @click="componentStore.resetComponentStyle"
+      >
+        reset all
+      </div>
+    </header>
     <section class="w-full flex-1 grid grid-cols-[200px_auto_200px]">
       <div class="">
         <!-- components -->

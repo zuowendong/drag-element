@@ -1,33 +1,21 @@
-# feicut-exam
+# FEI CUT EXAM
 
-This template should help get you started developing with Vue 3 in Vite.
+## 线上预览地址
 
-## Recommended IDE Setup
+> https://zuowendong.github.io/feicut-exam/
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+_tips: 需要翻墙_
 
-## Type Support for `.vue` Imports in TS
+## 仓库地址
 
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) to make the TypeScript language service aware of `.vue` types.
+> https://github.com/zuowendong/feicut-exam
 
-## Customize configuration
+## 本地运行
 
-See [Vite Configuration Reference](https://vite.dev/config/).
+**Node Version: 20^**
 
-## Project Setup
-
-```sh
+```shell
 pnpm install
-```
 
-### Compile and Hot-Reload for Development
-
-```sh
 pnpm dev
-```
-
-### Type-Check, Compile and Minify for Production
-
-```sh
-pnpm build
 ```
