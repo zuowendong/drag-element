@@ -10,6 +10,6 @@ export const IMAGE_COMPONENT = {
     rotate: 0,
   },
   propsVal: {
-    url: "/demo.png",
+    url: "/public/demo.png",
   },
 };
