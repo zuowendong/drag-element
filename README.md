@@ -1,14 +1,8 @@
-# FEI CUT EXAM
+# DRAG ELEMENT
 
 ## 线上预览地址
 
-> https://zuowendong.github.io/feicut-exam/
-
-_tips: 需要翻墙_
-
-## 仓库地址
-
-> https://github.com/zuowendong/feicut-exam
+> https://zuowendong.github.io/drag-element/
 
 ## 本地运行
 
